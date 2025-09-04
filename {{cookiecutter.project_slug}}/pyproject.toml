@@ -1,0 +1,224 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "{{cookiecutter.pypi_package_name}}"
+version = "{{cookiecutter.first_version}}"
+description = "{{cookiecutter.project_short_description}}"
+readme = "README.md"
+authors = [
+    {name = "{{cookiecutter.full_name}}", email = "{{cookiecutter.email}}"},
+]
+maintainers = [
+    {name = "{{cookiecutter.full_name}}", email = "{{cookiecutter.email}}"},
+]
+{% if cookiecutter.license != "Proprietary" -%}
+license = {text = "{{cookiecutter.license}}"}
+{% endif -%}
+requires-python = ">={{cookiecutter.python_version}}"
+keywords = []
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    {% if cookiecutter.license == "MIT" -%}
+    "License :: OSI Approved :: MIT License",
+    {% elif cookiecutter.license == "BSD-3-Clause" -%}
+    "License :: OSI Approved :: BSD License",
+    {% elif cookiecutter.license == "Apache-2.0" -%}
+    "License :: OSI Approved :: Apache Software License",
+    {% elif cookiecutter.license == "GPL-3.0" -%}
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    {% endif -%}
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: {{cookiecutter.python_version}}",
+    {% if cookiecutter.python_version != "3.13" -%}
+    {% for version in ["3.11", "3.12", "3.13"] -%}
+    {% if version > cookiecutter.python_version -%}
+    "Programming Language :: Python :: {{version}}",
+    {% endif -%}
+    {% endfor -%}
+    {% endif -%}
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    {% if cookiecutter.command_line_interface == "Typer" -%}
+    "typer>=0.9.0",
+    {% elif cookiecutter.command_line_interface == "Click" -%}
+    "click>=8.0.0",
+    {% endif -%}
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "pytest-mock>=3.10",
+    "ruff>=0.1.0",
+    "mypy>=1.0",
+    "black>=23.0",
+    {% if cookiecutter.use_pre_commit == "y" -%}
+    "pre-commit>=3.0",
+    {% endif -%}
+    "tox>=4.0",
+]
+test = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "pytest-mock>=3.10",
+]
+docs = [
+    "mkdocs>=1.4",
+    "mkdocs-material>=9.0",
+    "mkdocstrings[python]>=0.20",
+]
+
+{% if cookiecutter.command_line_interface != "None" -%}
+[project.scripts]
+{{cookiecutter.project_slug}} = "{{cookiecutter.project_slug}}.cli:main"
+{% endif %}
+
+[project.urls]
+Homepage = "https://github.com/{{cookiecutter.github_username}}/{{cookiecutter.pypi_package_name}}"
+Documentation = "https://github.com/{{cookiecutter.github_username}}/{{cookiecutter.pypi_package_name}}/blob/main/README.md"
+Repository = "https://github.com/{{cookiecutter.github_username}}/{{cookiecutter.pypi_package_name}}"
+"Bug Tracker" = "https://github.com/{{cookiecutter.github_username}}/{{cookiecutter.pypi_package_name}}/issues"
+Changelog = "https://github.com/{{cookiecutter.github_username}}/{{cookiecutter.pypi_package_name}}/blob/main/CHANGELOG.md"
+
+# Tool configurations
+[tool.ruff]
+target-version = "py{{cookiecutter.python_version.replace('.', '')}}"
+line-length = 88
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # Pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+    "SIM", # flake8-simplify
+    "ICN", # flake8-import-conventions
+    "S",   # flake8-bandit (security)
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+    "S101",  # use of assert detected (pytest uses assert)
+    "ARG002", # unused method argument
+    "ARG001", # unused function argument
+]
+unfixable = ["B"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*" = ["S101", "ARG", "FBT"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.black]
+line-length = 88
+target-version = ["py{{cookiecutter.python_version.replace('.', '')}}"]
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+)/
+'''
+
+[tool.mypy]
+python_version = "{{cookiecutter.python_version}}"
+check_untyped_defs = true
+disallow_any_generics = true
+disallow_incomplete_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_unreachable = true
+strict_equality = true
+show_error_codes = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov={{cookiecutter.project_slug}}",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--cov-fail-under=80",
+]
+testpaths = ["tests"]
+pythonpath = ["src"]
+filterwarnings = [
+    "error",
+    "ignore::UserWarning",
+    "ignore::DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["{{cookiecutter.project_slug}}"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "if self.debug:",
+    "if settings.DEBUG",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if 0:",
+    "if __name__ == .__main__.:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"

@@ -1,0 +1,31 @@
+{
+  "full_name": "Your Name",
+  "email": "your.email@example.com",
+  "github_username": "yourusername",
+  "project_name": "My Python Project",
+  "project_slug": "{{ cookiecutter.project_name.lower().replace(' ', '_').replace('-', '_') }}",
+  "pypi_package_name": "{{ cookiecutter.project_name.lower().replace(' ', '-') }}",
+  "project_short_description": "A Python project created with best practices",
+  "first_version": "0.1.0",
+  "python_version": ["3.10", "3.11", "3.12", "3.13"],
+  "command_line_interface": ["None", "Typer", "Click", "argparse"],
+  "use_github_actions": ["y", "n"],
+  "use_pre_commit": ["y", "n"],
+  "license": ["MIT", "BSD-3-Clause", "Apache-2.0", "GPL-3.0", "Proprietary"],
+  "create_author_file": ["y", "n"],
+  "use_docker": ["y", "n"],
+  "__prompts__": {
+    "full_name": "Your full name (used in setup.py and docs)",
+    "email": "Your email address", 
+    "github_username": "Your GitHub username",
+    "project_name": "The name of your project",
+    "project_short_description": "A short description of the project",
+    "python_version": "Minimum Python version to support",
+    "command_line_interface": "Command line interface library",
+    "use_github_actions": "Set up GitHub Actions CI/CD",
+    "use_pre_commit": "Set up pre-commit hooks",
+    "license": "Choose a license for your project",
+    "create_author_file": "Create AUTHORS file",
+    "use_docker": "Include Docker configuration"
+  }
+}
