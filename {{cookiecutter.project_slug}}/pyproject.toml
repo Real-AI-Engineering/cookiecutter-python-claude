@@ -33,20 +33,35 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: {{cookiecutter.python_version}}",
-    {% if cookiecutter.python_version != "3.13" -%}
-    {% for version in ["3.11", "3.12", "3.13"] -%}
-    {% if version > cookiecutter.python_version -%}
-    "Programming Language :: Python :: {{version}}",
-    {% endif -%}
-    {% endfor -%}
+    {% if cookiecutter.python_version == "3.10" -%}
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    {% elif cookiecutter.python_version == "3.11" -%}
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    {% elif cookiecutter.python_version == "3.12" -%}
+    "Programming Language :: Python :: 3.13",
     {% endif -%}
     "Topic :: Software Development :: Libraries :: Python Modules",
 ]
 dependencies = [
-    {% if cookiecutter.command_line_interface == "Typer" -%}
+    {% if cookiecutter.project_type != "web" and cookiecutter.command_line_interface == "Typer" -%}
     "typer>=0.9.0",
-    {% elif cookiecutter.command_line_interface == "Click" -%}
+    {% elif cookiecutter.project_type != "web" and cookiecutter.command_line_interface == "Click" -%}
     "click>=8.0.0",
+    {% endif -%}
+    {% if cookiecutter.project_type != "cli" -%}
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    {% endif -%}
+    {% if cookiecutter.project_type != "cli" -%}
+    "structlog>=23.2.0",
+    {% endif -%}
+    {% if cookiecutter.project_type != "cli" -%}
+    "asgi-correlation-id>=4.3.0",
     {% endif -%}
 ]
 
@@ -55,9 +70,14 @@ dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "pytest-mock>=3.10",
+    {% if cookiecutter.project_type != "cli" -%}
+    "pytest-asyncio>=0.21.0",
+    "httpx>=0.25.0",
+    {% endif -%}
     "ruff>=0.1.0",
     "mypy>=1.0",
     "black>=23.0",
+    "pyright>=1.1.0",
     {% if cookiecutter.use_pre_commit == "y" -%}
     "pre-commit>=3.0",
     {% endif -%}
@@ -67,6 +87,10 @@ test = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
     "pytest-mock>=3.10",
+    {% if cookiecutter.project_type != "cli" -%}
+    "pytest-asyncio>=0.21.0",
+    "httpx>=0.25.0",
+    {% endif -%}
 ]
 docs = [
     "mkdocs>=1.4",

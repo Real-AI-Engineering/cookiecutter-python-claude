@@ -67,6 +67,12 @@ jobs:
       run: |
         mypy src/
 
+    {% if cookiecutter.project_type != "cli" -%}
+    - name: Type check with pyright
+      run: |
+        pyright src/
+
+    {% endif -%}
     - name: Test with pytest
       run: |
         pytest --cov={{cookiecutter.project_slug}} --cov-report=xml --cov-report=term-missing
@@ -115,6 +121,48 @@ jobs:
           bandit-report.json
           safety-report.json
 
+  {% if cookiecutter.use_docker == "y" -%}
+  docker:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: docker/Dockerfile
+        push: false
+        tags: {{cookiecutter.project_slug}}:test
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+
+    {% if cookiecutter.project_type != "cli" -%}
+    - name: Test Docker image
+      run: |
+        # Start the container in background
+        docker run -d --name test-container -p 8000:8000 {{cookiecutter.project_slug}}:test
+        
+        # Wait for the application to start
+        sleep 10
+        
+        # Test health endpoints
+        curl -f http://localhost:8000/healthz || exit 1
+        curl -f http://localhost:8000/livez || exit 1
+        curl -f http://localhost:8000/readyz || exit 1
+        
+        # Stop the container
+        docker stop test-container
+        docker rm test-container
+
+    {% endif -%}
+  {% endif -%}
+  
   build:
     runs-on: ubuntu-latest
     needs: [test, security]
@@ -147,7 +195,7 @@ jobs:
         name: dist
         path: dist/
 
-  {% if cookiecutter.command_line_interface != "None" -%}
+  {% if cookiecutter.project_type != "web" -%}
   integration:
     runs-on: ubuntu-latest
     needs: [build]
@@ -170,14 +218,61 @@ jobs:
       run: |
         pip install dist/*.whl
 
+    {% if cookiecutter.command_line_interface != "None" -%}
     - name: Test CLI installation
       run: |
         {{cookiecutter.project_slug}} --help
         {{cookiecutter.project_slug}} --version
+    {% endif %}
 
     - name: Run integration tests
       run: |
         # Add integration test commands here
         echo "Integration tests would run here"
+  {% endif %}
+  
+  {% if cookiecutter.project_type != "cli" -%}
+  fastapi-integration:
+    runs-on: ubuntu-latest
+    needs: [build]
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "{{cookiecutter.python_version}}"
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: dist
+        path: dist/
+
+    - name: Install package from wheel
+      run: |
+        pip install dist/*.whl
+
+    - name: Test FastAPI application
+      run: |
+        # Start the application in background
+        python -m {{cookiecutter.project_slug}}.main &
+        APP_PID=$!
+        
+        # Wait for the application to start
+        sleep 5
+        
+        # Test health endpoints
+        curl -f http://localhost:8000/healthz
+        curl -f http://localhost:8000/livez  
+        curl -f http://localhost:8000/readyz
+        curl -f http://localhost:8000/
+        
+        # Test OpenAPI docs (if debug mode)
+        curl -f http://localhost:8000/openapi.json || echo "OpenAPI not available (production mode)"
+        
+        # Stop the application
+        kill $APP_PID
   {% endif %}
 {% endif %}

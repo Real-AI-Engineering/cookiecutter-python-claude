@@ -18,9 +18,18 @@
 
 - 🐍 **Modern Python**: Built for Python {{cookiecutter.python_version}}+ with full type annotations
 - 🧪 **Testing Ready**: Comprehensive test suite with pytest and coverage reporting
-- 🔧 **Developer Friendly**: Pre-configured with ruff, mypy, and modern Python tooling
-{% if cookiecutter.command_line_interface != "None" -%}
+- 🔧 **Developer Friendly**: Pre-configured with ruff, mypy, pyright, and modern Python tooling
+{% if cookiecutter.project_type != "web" and cookiecutter.command_line_interface != "None" -%}
 - ⚡ **CLI Interface**: Command-line tool built with {{cookiecutter.command_line_interface}}
+{% endif -%}
+{% if cookiecutter.project_type != "cli" -%}
+- 🌐 **FastAPI Framework**: High-performance async web API with automatic documentation
+- 🏥 **Kubernetes Ready**: Health endpoints (healthz, livez, readyz) for container orchestration
+- 📊 **Structured Logging**: JSON logging with correlation ID tracking
+- 🎛️ **Configuration Management**: Pydantic v2 Settings for type-safe configuration
+{% endif -%}
+{% if cookiecutter.use_docker == "y" -%}
+- 🐳 **Docker Support**: Multi-stage builds for production and development environments
 {% endif -%}
 {% if cookiecutter.use_github_actions == "y" -%}
 - 🚀 **CI/CD Ready**: GitHub Actions workflow for automated testing and deployment
@@ -48,6 +57,54 @@ pip install -e ".[dev]"
 
 ## Quick Start
 
+{% if cookiecutter.project_type != "cli" -%}
+### FastAPI Server
+
+```bash
+# Start the development server
+uvicorn {{cookiecutter.project_slug}}.main:app --reload
+
+# Or run directly with Python
+python -m {{cookiecutter.project_slug}}.main
+```
+
+Access the API:
+- 📚 **Interactive API documentation**: http://localhost:8000/docs
+- 📖 **Alternative API documentation**: http://localhost:8000/redoc
+- 🏥 **Health check**: http://localhost:8000/healthz
+- ✅ **Liveness probe**: http://localhost:8000/livez
+- 🚦 **Readiness probe**: http://localhost:8000/readyz
+
+{% if cookiecutter.use_docker == "y" -%}
+### Docker
+
+```bash
+# Build the production image
+docker build -f docker/Dockerfile -t {{cookiecutter.project_slug}}:latest .
+
+# Run the container
+docker run -p 8000:8000 {{cookiecutter.project_slug}}:latest
+
+# Or use Docker Compose for development
+cd docker && docker-compose up
+```
+{% endif -%}
+
+### Example API Usage
+
+```python
+import httpx
+
+# Check health
+response = httpx.get("http://localhost:8000/healthz")
+print(response.json())  # {"status": "healthy", ...}
+
+# Make API calls
+client = httpx.Client(base_url="http://localhost:8000")
+response = client.get("/api/v1/your-endpoint")
+```
+
+{% else -%}
 ### Python API
 
 ```python
@@ -57,7 +114,8 @@ import {{cookiecutter.project_slug}}
 print(f"{{cookiecutter.project_name}} v{{ '{'}}{{cookiecutter.project_slug}}.__version__{{ '}' }}")
 ```
 
-{% if cookiecutter.command_line_interface != "None" -%}
+{% endif -%}
+{% if cookiecutter.project_type != "web" and cookiecutter.command_line_interface != "None" -%}
 ### Command Line Interface
 
 ```bash

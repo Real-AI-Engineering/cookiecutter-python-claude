@@ -1,0 +1,84 @@
+{% if cookiecutter.use_docker == "y" and cookiecutter.project_type != "cli" -%}
+# Docker Compose for {{cookiecutter.project_name}} development
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    container_name: {{cookiecutter.project_slug}}_dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../src:/app/src:ro
+      - ../.env:/app/.env:ro
+    environment:
+      - PYTHONPATH=/app/src
+      - DEBUG=true
+      - ENVIRONMENT=development
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Uncomment to add Redis for caching/sessions
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: {{cookiecutter.project_slug}}_redis
+  #   ports:
+  #     - "6379:6379"
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+  # Uncomment to add PostgreSQL database  
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: {{cookiecutter.project_slug}}_postgres
+  #   environment:
+  #     POSTGRES_DB: {{cookiecutter.project_slug}}
+  #     POSTGRES_USER: {{cookiecutter.project_slug}}
+  #     POSTGRES_PASSWORD: {{cookiecutter.project_slug}}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD-SHELL", "pg_isready -U {{cookiecutter.project_slug}}"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+
+# volumes:
+#   postgres_data:
+
+networks:
+  default:
+    name: {{cookiecutter.project_slug}}_network
+{% elif cookiecutter.use_docker == "y" -%}
+# Docker Compose for {{cookiecutter.project_name}} development
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    container_name: {{cookiecutter.project_slug}}_dev
+    volumes:
+      - ../src:/app/src:ro
+      - ../.env:/app/.env:ro
+    environment:
+      - PYTHONPATH=/app/src
+    restart: unless-stopped
+
+networks:
+  default:
+    name: {{cookiecutter.project_slug}}_network
+{% endif -%}
