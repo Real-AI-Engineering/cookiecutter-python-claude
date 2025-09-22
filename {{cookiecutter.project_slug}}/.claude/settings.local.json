@@ -1,0 +1,75 @@
+{
+  "project": {
+    "name": "{{cookiecutter.project_name}}",
+    "type": "{{cookiecutter.project_type}}",
+    "language": "python",
+    "framework": "{% if cookiecutter.project_type != 'cli' %}fastapi{% else %}{% if cookiecutter.command_line_interface != 'None' %}{{ cookiecutter.command_line_interface.lower() }}{% else %}none{% endif %}{% endif %}",
+    "python_version": "{{cookiecutter.python_version}}",
+    "package_manager": "uv",
+    "test_framework": "pytest"
+  },
+  "github": {
+    "owner": "{{cookiecutter.github_username}}",
+    "repo": "{{cookiecutter.pypi_package_name}}"
+  },
+  "paths": {
+    "source": "src/{{cookiecutter.project_slug}}",
+    "tests": "tests",
+    "docs": "docs",
+    "config": "pyproject.toml"
+  },
+  "testing": {
+    "framework": "pytest",
+    "command": "pytest",
+    "coverage_command": "pytest --cov={{cookiecutter.project_slug}} --cov-report=term-missing",
+    "options": ["-v", "--tb=short", "--strict-markers"],
+    "environment": {
+      "PYTHONPATH": "."
+    }
+  },
+  "linting": {
+    "tool": "ruff",
+    "check_command": "ruff check .",
+    "fix_command": "ruff check . --fix",
+    "format_command": "ruff format ."
+  },
+  "type_checking": {
+    "tool": "mypy",
+    "command": "mypy src/"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(bash .claude/scripts/test-and-log.sh:*)",
+      "Bash(.claude/scripts/test-and-log.sh:*)",
+      "Bash(bash .claude/scripts/pm/*)",
+      "Bash(.claude/scripts/pm/*)",
+      "Bash(cat *)",
+      "Bash(cat:*)",
+      "Bash(find *)",
+      "Bash(gh *)",
+      "Bash(git *)",
+      "Bash(grep *)",
+      "Bash(kill:*)",
+      "Bash(ln:*)",
+      "Bash(ls *)",
+      "Bash(mv *)",
+      "Bash(rm *)",
+      "Bash(sed *)",
+      "Bash(sed:*)",
+      "Bash(touch *)",
+      "Bash(tree *)",
+      "Bash(uv *)",
+      "Bash(python *)",
+      "Bash(pytest *)",
+      "Bash(ruff check *)",
+      "Bash(ruff check:*)",
+      "Bash(ruff format *)",
+      "Bash(mypy *)",
+      "Bash(pip *)",
+      "Bash(coverage *)",
+      "List(**)",
+      "WebFetch(domain:github.com)",
+      "WebSearch"
+    ]
+  }
+}

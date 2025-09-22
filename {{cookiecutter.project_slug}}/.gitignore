@@ -205,4 +205,18 @@ secrets.json
 .claude/epics/
 .claude/context/
 .claude/settings.local.json
+.claude/testing-config.md
+
+# CCPM Python-specific
+.claude/epics/*/venv/
+.claude/epics/*/.venv/
+.claude/epics/*/__pycache__/
+.claude/epics/*/.pytest_cache/
+.claude/epics/*/.coverage
+.claude/epics/*/.mypy_cache/
+.claude/epics/*/.ruff_cache/
+.claude/epics/*/htmlcov/
+.claude/epics/*/*.egg-info/
+.claude/epics/*/dist/
+.claude/epics/*/build/
 {% endif -%}

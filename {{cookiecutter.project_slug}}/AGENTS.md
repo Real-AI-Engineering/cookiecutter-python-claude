@@ -51,17 +51,169 @@ This project includes the Claude Code PM system for spec-driven development with
 
 ### Specialized Agents
 
-#### 🔍 code-analyzer
+#### Core CCPM Agents
+
+##### 🔍 code-analyzer
 Hunts bugs across multiple files without polluting main context.
+```bash
+# Example: Find all usages of a deprecated function
+/task code-analyzer "Find all calls to deprecated_function() and suggest replacements"
+```
 
-#### 📄 file-analyzer
+##### 📄 file-analyzer
 Reads and summarizes verbose files (logs, outputs, configs).
+```bash
+# Example: Analyze large log file
+/task file-analyzer "Summarize errors in logs/application.log"
+```
 
-#### 🧪 test-runner
+##### 🧪 test-runner
 Executes tests without dumping output to main thread.
+```bash
+# Example: Run specific test suite
+/task test-runner "Run tests/test_api.py and analyze failures"
+```
 
-#### 🔀 parallel-worker
+##### 🔀 parallel-worker
 Coordinates multiple parallel work streams for an issue.
+```bash
+# Example: Implement feature across multiple modules
+/task parallel-worker "Implement user authentication in api/, models/, and ui/"
+```
+
+#### Python-Specific Agents
+
+##### 🐍 pytest-runner
+Specialized for Python test execution with pytest.
+```bash
+# Example: Run tests with coverage
+/task pytest-runner "Run all tests with coverage report"
+```
+
+##### 🔧 ruff-analyzer
+Analyzes code quality and applies fixes.
+```bash
+# Example: Fix all linting issues
+/task ruff-analyzer "Fix linting issues in src/"
+```
+
+##### 📝 mypy-checker
+Performs type checking and inference.
+```bash
+# Example: Check type safety
+/task mypy-checker "Verify type annotations in api module"
+```
+
+##### 📦 uv-manager
+Manages dependencies and virtual environments.
+```bash
+# Example: Update dependencies
+/task uv-manager "Update all dependencies and check for conflicts"
+```
+
+### Python-Specific PM Commands
+
+```bash
+# Check dependencies
+/pm:deps-check
+
+# Fix linting issues
+/pm:lint-fix
+
+# Run type checking
+/pm:type-check
+
+# Generate coverage report
+/pm:coverage-report
+
+# Security scan
+/pm:security-scan
+
+# Build documentation
+/pm:docs-build
+
+# Profile performance
+/pm:perf-profile
+
+# Run pre-commit checks
+/pm:pre-commit
+
+# Build package
+/pm:package-build
+
+# Setup environment
+/pm:env-setup
+```
+
+### Workflow Examples
+
+#### Example 1: Implementing a New API Endpoint
+
+```bash
+# 1. Create PRD for the feature
+/pm:prd-new api-user-management
+
+# 2. Convert to technical epic
+/pm:prd-parse api-user-management
+
+# 3. Push to GitHub and decompose
+/pm:epic-oneshot api-user-management
+
+# 4. Start implementation
+/pm:issue-start 1234
+
+# 5. Run Python-specific checks
+/pm:lint-fix
+/pm:type-check
+/pm:coverage-report
+
+# 6. Sync progress
+/pm:issue-sync 1234
+```
+
+#### Example 2: Debugging Test Failures
+
+```bash
+# 1. Use pytest-runner agent for detailed analysis
+/task pytest-runner "Run failing tests with verbose output"
+
+# 2. Use code-analyzer to trace the issue
+/task code-analyzer "Trace data flow in authentication module"
+
+# 3. Fix and verify
+/pm:lint-fix
+/testing:run tests/test_auth.py
+
+# 4. Update coverage
+/pm:coverage-report
+```
+
+#### Example 3: Dependency Management
+
+```bash
+# 1. Check current state
+/pm:deps-check
+
+# 2. Update dependencies
+/task uv-manager "Update all dependencies to latest compatible versions"
+
+# 3. Run full test suite
+/testing:run
+
+# 4. Security scan
+/pm:security-scan
+```
+
+### Best Practices for Python Projects
+
+1. **Always use uv** for package management (never pip directly)
+2. **Run ruff** before committing any code
+3. **Maintain type hints** and run mypy regularly
+4. **Use pytest fixtures** for test data
+5. **Keep coverage above 80%** for critical code
+6. **Document with docstrings** for all public APIs
+7. **Use pre-commit hooks** to catch issues early
+8. **Profile before optimizing** performance issues
 
 ### Workflow
 
@@ -69,7 +221,8 @@ Coordinates multiple parallel work streams for an issue.
 2. **Architect**: Transform PRD into technical epic
 3. **Decompose**: Break epic into actionable tasks
 4. **Execute**: Implement with specialized agents
-5. **Track**: Maintain progress in GitHub Issues
+5. **Quality**: Run Python-specific checks (ruff, mypy, pytest)
+6. **Track**: Maintain progress in GitHub Issues
 
 {% endif -%}
 

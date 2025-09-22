@@ -18,12 +18,54 @@ echo "https://github.com/automazeio/ccpm"
 echo ""
 echo ""
 
-echo "🚀 Initializing Claude Code PM System"
-echo "======================================"
+echo "🚀 Initializing Claude Code PM System for Python"
+echo "================================================"
 echo ""
 
 # Check for required tools
 echo "🔍 Checking dependencies..."
+
+# Check Python
+if command -v python3 &> /dev/null; then
+  python_version=$(python3 --version 2>&1 | grep -oE '[0-9]+\.[0-9]+')
+  echo "  ✅ Python installed (v$python_version)"
+else
+  echo "  ❌ Python not found"
+  echo "  Please install Python 3.10+"
+  exit 1
+fi
+
+# Check uv
+if command -v uv &> /dev/null; then
+  echo "  ✅ uv package manager installed"
+else
+  echo "  ⚠️ uv not found (recommended)"
+  echo "  Install with: curl -LsSf https://astral.sh/uv/install.sh | sh"
+fi
+
+# Check pytest
+if python3 -c "import pytest" 2>/dev/null; then
+  echo "  ✅ pytest installed"
+else
+  echo "  ⚠️ pytest not installed"
+  echo "  Install with: uv pip install pytest pytest-cov"
+fi
+
+# Check ruff
+if command -v ruff &> /dev/null; then
+  echo "  ✅ ruff linter installed"
+else
+  echo "  ⚠️ ruff not found"
+  echo "  Install with: uv pip install ruff"
+fi
+
+# Check mypy
+if command -v mypy &> /dev/null; then
+  echo "  ✅ mypy type checker installed"
+else
+  echo "  ⚠️ mypy not found"
+  echo "  Install with: uv pip install mypy"
+fi
 
 # Check gh CLI
 if command -v gh &> /dev/null; then
