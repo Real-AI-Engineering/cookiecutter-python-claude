@@ -19,6 +19,7 @@
   "license": ["MIT", "BSD-3-Clause", "Apache-2.0", "GPL-3.0", "Proprietary"],
   "create_author_file": ["y", "n"],
   "use_docker": ["y", "n"],
+  "use_claude_pm": ["y", "n"],
   "__prompts__": {
     "full_name": "Your full name (used in setup.py and docs)",
     "email": "Your email address", 
@@ -31,6 +32,7 @@
     "use_pre_commit": "Set up pre-commit hooks",
     "license": "Choose a license for your project",
     "create_author_file": "Create AUTHORS file",
-    "use_docker": "Include Docker configuration"
+    "use_docker": "Include Docker configuration",
+    "use_claude_pm": "Include Claude Code PM system (spec-driven development with GitHub Issues)"
   }
 }

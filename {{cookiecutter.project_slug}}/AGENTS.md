@@ -2,6 +2,77 @@
 
 Development workflow guidelines and best practices for AI agents and developers working on this project.
 
+{% if cookiecutter.use_claude_pm == "y" -%}
+## Claude Code PM System
+
+This project includes the Claude Code PM system for spec-driven development with GitHub Issues integration.
+
+### Quick Start
+
+```bash
+# Initialize the PM system
+/pm:init
+
+# Create your first PRD (Product Requirements Document)
+/pm:prd-new feature-name
+
+# Convert PRD to implementation epic
+/pm:prd-parse feature-name
+
+# Push to GitHub and start development
+/pm:epic-oneshot feature-name
+/pm:issue-start 1234
+```
+
+### Available Commands
+
+#### PRD Management
+- `/pm:prd-new` - Create new product requirement document
+- `/pm:prd-parse` - Convert PRD to implementation epic
+- `/pm:prd-list` - List all PRDs
+- `/pm:prd-status` - Show PRD implementation status
+
+#### Epic Management
+- `/pm:epic-decompose` - Break epic into task files
+- `/pm:epic-sync` - Push epic and tasks to GitHub
+- `/pm:epic-oneshot` - Decompose and sync in one command
+- `/pm:epic-show` - Display epic and its tasks
+
+#### Issue Management
+- `/pm:issue-start` - Begin work with specialized agent
+- `/pm:issue-sync` - Push progress updates to GitHub
+- `/pm:issue-close` - Mark issue as complete
+- `/pm:next` - Show next priority issue
+
+#### Context Management
+- `/context:create` - Create initial project context
+- `/context:update` - Update existing context
+- `/context:prime` - Load context into conversation
+
+### Specialized Agents
+
+#### 🔍 code-analyzer
+Hunts bugs across multiple files without polluting main context.
+
+#### 📄 file-analyzer
+Reads and summarizes verbose files (logs, outputs, configs).
+
+#### 🧪 test-runner
+Executes tests without dumping output to main thread.
+
+#### 🔀 parallel-worker
+Coordinates multiple parallel work streams for an issue.
+
+### Workflow
+
+1. **Plan**: Create PRD through guided brainstorming
+2. **Architect**: Transform PRD into technical epic
+3. **Decompose**: Break epic into actionable tasks
+4. **Execute**: Implement with specialized agents
+5. **Track**: Maintain progress in GitHub Issues
+
+{% endif -%}
+
 ## Project Structure & Module Organization
 
 ```

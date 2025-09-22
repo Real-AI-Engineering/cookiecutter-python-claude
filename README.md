@@ -15,6 +15,7 @@ A modern, feature-rich [Cookiecutter](https://github.com/cookiecutter/cookiecutt
 - **AGENTS.md**: Detailed workflow guidelines for AI agents and developers
 - **Best Practices**: Embedded simplicity-first development principles
 - **Project-Specific Instructions**: Tailored guidance for each generated project
+- **PM System (Optional)**: Full Claude Code PM system for spec-driven development with GitHub Issues
 
 ### 🔧 Developer Experience
 - **Multiple CLI Options**: Choose from Typer, Click, argparse, or none
@@ -111,6 +112,7 @@ awesome-python-tool/
 - **license**: License type (MIT, BSD-3-Clause, Apache-2.0, GPL-3.0, Proprietary)
 - **create_author_file**: Create AUTHORS.md file (y/n)
 - **use_docker**: Include Docker configuration (y/n)
+- **use_claude_pm**: Include Claude Code PM system for spec-driven development (y/n)
 
 ## Key Features Explained
 
@@ -121,6 +123,18 @@ Every generated project includes a comprehensive `CLAUDE.md` file with:
 - **Common Commands**: Development, testing, and deployment commands
 - **Architecture Overview**: Key patterns and dependencies
 - **Best Practices**: Error handling, performance, security guidelines
+
+### Claude Code PM System
+
+When enabled (`use_claude_pm: y`), the template includes the full Claude Code PM system from [automazeio/ccpm](https://github.com/automazeio/ccpm), providing:
+
+- **Spec-driven development**: Create PRDs through guided brainstorming
+- **GitHub Issues integration**: Full traceability from specification to implementation
+- **Parallel agent execution**: Multiple AI agents working simultaneously
+- **Context preservation**: Maintain project state across all sessions
+- **Comprehensive commands**: `/pm:*` commands for complete workflow management
+
+The PM system helps teams ship faster with better quality through structured planning, automated task decomposition, and intelligent work prioritization.
 
 ### AGENTS.md Workflow Guidelines
 The `AGENTS.md` file provides detailed guidelines for:
